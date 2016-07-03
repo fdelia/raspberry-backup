@@ -32,21 +32,20 @@ def nextHours(hours):
 	now = datetime.datetime.now()
 
 	avg_temp = 0
-	avg_precip = 0
+	max_precip = 0
 	for d in hourly_data:
 		if d.time - now > datetime.timedelta(0, 0, 0) and d.time - now < datetime.timedelta(0, hours*60*60, 0):
 			print str(d.time) + ' : '+str(d.apparentTemperature) + ' / ' +str(d.temperature) +'  ,  ' + str(d.precipProbability)
 			avg_temp += d.apparentTemperature
-			avg_precip += d.precipProbability
+			max_precip = max(d.precipProbability, max_precip)
 
 	avg_temp /= hours
-	avg_precip /= hours
 
 	print "avg temp: " + str(avg_temp)
-	print "avg precip: " + str(avg_precip)
+	print "max precip: " + str(max_precip)
 
 	# the temp is colder than swiss meteo, correct:
-	avg_temp += 2
+	avg_temp += 1
 
 	# 15 deg is cold, 27 is warm -- for now, add monthly averages later
 	avg_temp -= 12
@@ -55,15 +54,15 @@ def nextHours(hours):
 	# the red color is too weak, make it a bit exponential
 	#avg_temp = pow(avg_temp, 0.75)
 
-	avg_precip = max(0, min(1, avg_precip))
+	max_precip = max(0, min(1, max_precip))
 	# make it a bit exponential, else the color shows too early
-	avg_precip = pow(avg_precip, 1.5)	
+	max_precip = pow(max_precip, 1.5)	
 
 	print "temp indicator: " + str(avg_temp)	
-	print "precip indicator: " + str(avg_precip)
+	print "precip indicator: " + str(max_precip)
 
-	led.color = (avg_temp, avg_precip, 1-avg_temp)
-	led2.color = (avg_temp, avg_precip, 1-avg_temp)
+	led.color = (avg_temp, max_precip, 1-avg_temp)
+	led2.color = (avg_temp, max_precip, 1-avg_temp)
 
 def sixHours():
 	nextHours(6)
