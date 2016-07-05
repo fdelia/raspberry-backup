@@ -19,7 +19,7 @@ def mypysite(name=None):
 def party():
 	global process
 	#os.system("party.py")
-	process = subprocess.Popen("python /home/pi/dev/party.py", shell=True)
+	#process = subprocess.Popen("python /home/pi/dev/party.py", shell=True)
 	#process = Popen(['python', '/home/pi/dev/party.py'], stdout=PIPE, stderr=PIPE)
 	return mypysite()
 

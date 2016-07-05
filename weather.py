@@ -26,6 +26,10 @@ def nextHours(hours):
 		led2.off()
 		return
 
+	# till the forecast is loaded
+	led.color = (0.2,0.2,0.2)
+	led2.color = (0.2,0.2,0.2)
+
 	forecast = forecastio.load_forecast(api_key, lat, lng)
 	hourly_data = forecast.hourly().data
 	print "next " + str(hours) + " hours"
@@ -48,8 +52,8 @@ def nextHours(hours):
 	avg_temp += 1
 
 	# 15 deg is cold, 27 is warm -- for now, add monthly averages later
-	avg_temp -= 12
-	avg_temp /= 15
+	avg_temp -= 15
+	avg_temp /= 12
 	avg_temp = max(0, min(1, avg_temp))
 	# the red color is too weak, make it a bit exponential
 	#avg_temp = pow(avg_temp, 0.75)
