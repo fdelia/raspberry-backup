@@ -9,7 +9,7 @@ from math import pow
 # https://developer.forecast.io/docs/v2#forecast_call
 
 led = RGBLED(red=4, green=26, blue=19)
-led2 = RGBLED(red=13, green=6, blue=5)
+#led2 = RGBLED(red=13, green=6, blue=5)
 
 button = Button(18)
 button2 = Button(23)

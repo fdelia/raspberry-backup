@@ -16,7 +16,7 @@ def getAdc (channel):
     return -1
 
   # Preform SPI transaction and store returned bits in 'r'
-  r = spi.xfer([1, (8+channel) << 4, 0])
+  r = spi.xfer2([1, (8+channel) << 4, 0])
 
   #Filter data bits from retruned bits
   adcOut = ((r[1]&3) << 8) + r[2]
