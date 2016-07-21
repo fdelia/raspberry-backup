@@ -69,25 +69,68 @@ def draw_leds(direction, intensity):
 		led[i].off()
 	ledC.off()
 
+	act_leds = []
+	dir_r = round(direction)
 	if intensity <= 0:
 		# directional LED blinks slowly
-		
-		pass
+		act_leds.append((dir_r, 2))	
 	elif intensity == 1:
 		# directional LED blinks normal
-		pass
+		act_leds.append((dir_r, 1))
 	elif intensity == 2: 
-		# directional LED steady, center LED blinks slowly
-		pass
+		# directional LED steady
+		act_leds.append((dir_r, 0))
 	elif intensity == 3:
-		# directional LED steady, center LED blinks normal
-		pass
+		# directional LED steady, center LED blinks slowly
+		act_leds.append((dir_r, 0))
+		act_leds.append(('c', 2))
 	elif intensity == 4:
+		# directional LED steady, center LED blinks normal
+		act_leds.append((dir_r, 0))
+		act_leds.append(('c', 1))
+	elif intensity == 5:
 		# directional and center LED steady
-		pass
-	elif intensity >= 5:
+		act_leds.append((dir_r, 0))
+		act_leds.append(('c', 0))
+	elif intensity >= 6:
 		# center LED steady
-		pass
+		act_leds.append(('c', 0))
+	
+	activate_leds(act_leds)
+
+def activate_leds(leds):
+	if len(leds)==0: return False
+
+	for (i, tick) in leds:
+		if tick != 0: continue
+		led = get_led(i)
+		led.on()
+
+	counter = 0
+	sleep_time = 1
+	while counter < 50 or True:
+		for (i, tick) in leds:
+			if tick != 1: continue
+			led = get_led(i)
+			if led.is_lit: led.off()
+			else: led.on()
+
+		counter += 1
+		sleep(sleep_time)
+		
+		for (i, tick) in leds:
+			if tick not in (1, 2): continue
+			led = get_led(i)
+			if led.is_lit: led.off()
+			else: led.on()
+
+		sleep(sleep_time)
+
+def get_led(i):
+	if i == 'c': return ledC
+	i = i % 8
+	return led[i]
+
 
 
 bear, dist = get_distance_and_bearing()
@@ -96,10 +139,11 @@ bear, dist = get_distance_and_bearing()
 bear = bear + 360 % 360
 led_bear = (bear/45)
 
-# 3000km = 5, 2400km = 4, etc.
-led_dist = max(0, min(5, (dist / 600)))
+# 3000km = 5, 2500km = 4, etc.
+led_dist = max(0, min(6, (dist / 500)))
 
 print("LED bear: " + str(led_bear))
 print("LED dist: " + str(led_dist))
-# draw_leds(led_bear, 5 - led_dist)
+draw_leds(led_bear, 6 - led_dist)
 
+#activate_leds([(1, 1)])
