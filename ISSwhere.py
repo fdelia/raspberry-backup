@@ -1,3 +1,9 @@
+#
+# This script shows the position of the ISS related to the own position  on a simple 9 led matrix.
+# It shows the bearing and the distance.
+# The distance is displayed by blinking slow/fast or the led being steady.
+# 
+
 import json
 import urllib2
 import sys
@@ -107,8 +113,8 @@ def activate_leds(leds):
 		led.on()
 
 	counter = 0
-	sleep_time = 1
-	while counter < 50 or True:
+	sleep_time = 1 # this counts 2 times
+	while counter < 5:
 		for (i, tick) in leds:
 			if tick != 1: continue
 			led = get_led(i)
@@ -133,17 +139,19 @@ def get_led(i):
 
 
 
-bear, dist = get_distance_and_bearing()
+while True:
+	bear, dist = get_distance_and_bearing()
 
-#bear -= 30 # leds north = east
-bear = bear + 360 % 360
-led_bear = (bear/45)
+	#bear -= 30 # leds north = east
+	bear = bear + 360 % 360
+	led_bear = (bear/45)
 
-# 3000km = 5, 2500km = 4, etc.
-led_dist = max(0, min(6, (dist / 500)))
+	# 3000km = 5, 2500km = 4, etc.
+	led_dist = max(0, min(6, (dist / 500)))
 
-print("LED bear: " + str(led_bear))
-print("LED dist: " + str(led_dist))
-draw_leds(led_bear, 6 - led_dist)
+	print("LED bear: " + str(led_bear))
+	print("LED dist: " + str(led_dist))
+	print(" ")
+	draw_leds(led_bear, 6 - led_dist)
 
-#activate_leds([(1, 1)])
+	#activate_leds([(1, 1)])
