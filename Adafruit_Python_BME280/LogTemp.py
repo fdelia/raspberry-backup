@@ -3,7 +3,7 @@ from time import sleep, strftime
 from gpiozero import LED
 
 led = LED(21) # red
-led2 = LED(20) # blue
+#led2 = LED(20) # blue
 
 # show if there is a human in the room
 try:
@@ -66,4 +66,4 @@ except (RuntimeError, TypeError, NameError):
 
 
 led.close()
-led2.close()
+#led2.close()

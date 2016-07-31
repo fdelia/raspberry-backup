@@ -77,26 +77,44 @@ def draw_leds(direction, intensity):
 
 	act_leds = []
 	dir_r = round(direction)
+	intensity = int(intensity)
+	TWOLEDLIMIT = 0.25
 	if intensity <= 0:
 		# directional LED blinks slowly
-		act_leds.append((dir_r, 2))	
+		act_leds.append((dir_r, 2))
+		# show two leds when in between
+		if dir_r - direction > TWOLEDLIMIT: act_leds.append((dir_r-1, 2))
+		if dir_r - direction < -TWOLEDLIMIT: act_leds.append((dir_r+1, 2))	
 	elif intensity == 1:
 		# directional LED blinks normal
 		act_leds.append((dir_r, 1))
+		if dir_r - direction > TWOLEDLIMIT: act_leds.append((dir_r-1, 1))
+                if dir_r - direction < -TWOLEDLIMIT: act_leds.append((dir_r+1, 1))
 	elif intensity == 2: 
 		# directional LED steady
 		act_leds.append((dir_r, 0))
+		if dir_r - direction > TWOLEDLIMIT: act_leds.append((dir_r-1, 0))
+                if dir_r - direction < -TWOLEDLIMIT: act_leds.append((dir_r+1, 0))
 	elif intensity == 3:
 		# directional LED steady, center LED blinks slowly
 		act_leds.append((dir_r, 0))
+		if dir_r - direction > TWOLEDLIMIT: act_leds.append((dir_r-1, 0))
+                if dir_r - direction < -TWOLEDLIMIT: act_leds.append((dir_r+1, 0))
+
 		act_leds.append(('c', 2))
 	elif intensity == 4:
 		# directional LED steady, center LED blinks normal
 		act_leds.append((dir_r, 0))
+		if dir_r - direction > TWOLEDLIMIT: act_leds.append((dir_r-1, 0))
+                if dir_r - direction < -TWOLEDLIMIT: act_leds.append((dir_r+1, 0))
+
 		act_leds.append(('c', 1))
 	elif intensity == 5:
 		# directional and center LED steady
 		act_leds.append((dir_r, 0))
+		if dir_r - direction > TWOLEDLIMIT: act_leds.append((dir_r-1, 0))
+                if dir_r - direction < -TWOLEDLIMIT: act_leds.append((dir_r+1, 0))
+
 		act_leds.append(('c', 0))
 	elif intensity >= 6:
 		# center LED steady
@@ -114,7 +132,7 @@ def activate_leds(leds):
 
 	counter = 0
 	sleep_time = 1 # this counts 2 times
-	while counter < 5:
+	while counter < 10:
 		for (i, tick) in leds:
 			if tick != 1: continue
 			led = get_led(i)
@@ -138,12 +156,17 @@ def get_led(i):
 	return led[i]
 
 
-
+bear = 0
+dist = 99999
 while True:
-	bear, dist = get_distance_and_bearing()
+	try:
+		bear, dist = get_distance_and_bearing()
+	except Exception as error:
+		print('Error: url not reachable')
+		print(' ')
 
 	#bear -= 30 # leds north = east
-	bear = bear + 360 % 360
+	bear = (bear + 360) % 360
 	led_bear = (bear/45)
 
 	# 3000km = 5, 2500km = 4, etc.
